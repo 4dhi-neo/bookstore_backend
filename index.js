@@ -4,6 +4,7 @@ require('dotenv').config()
 const express=require("express")
 const cors=require("cors")
 const router=require('./Routes/routes')
+require('./Dbconnect/db')
 
 //creating server instance
 const server=express()
@@ -11,9 +12,10 @@ const server=express()
 server.use(cors())
 //enabling middleware(parse Json req body)
 server.use(express.json())
-
 //Configuring router
 server.use(router)
+//configuring static middleware for  sering static files to clientside
+server.use('/uploads',express.static('uploads'))
 
 
 //setting up port number in server
@@ -39,3 +41,12 @@ server.listen(port,()=>{
 // server.delete('/deletebook',(req,res)=>{
 //     res.status(200).json({"msg":"Deleted"})
 // })
+
+
+//handling global errors using application level middlewares
+
+server.use((err,req,res,next)=>{
+    console.log(err)
+    res.status(500).json(err)
+})
+
